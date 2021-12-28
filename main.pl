@@ -28,6 +28,7 @@ my $bin=dirname (abs_path ($0));
 			-fa1	<str>		the absolute path of human reference when performing bwa-mem [hg19]
 			-fa2	<str>		the absolute path of  pathogene reference when performing bwa-mem [virus]
 			-filter	<str>		choose uniq alignment reads or not in soap
+			-t	<num>		number of  processors
 
 =head1 author
   
@@ -47,7 +48,7 @@ my $bin=dirname (abs_path ($0));
   version2.1: 2020-11-22
 =cut
 
-my ($outdir, $list, $stp, $qsub, $vf2, $vf3, $vf4, $filter);
+my ($outdir, $list, $stp, $qsub, $vf2, $vf3, $vf4, $filter,$thread);
 my $fqnum = 36;
 my $config = "$bin/ConfigHBV_19";
 #my $prepare_data = "/ifs1/ST_REHEAL/USER/zengxi/bin/HBV/yishang_bin/HBV_foruse.pl";
@@ -71,6 +72,7 @@ GetOptions(
 	'fa1=s' => \$fa1,
 	'fa2=s' => \$fa2,
 	'filter' => \$filter,
+	'thread=t' => \$thread,
 );
 
 die `pod2text $0` unless ($outdir && $list && $stp);
@@ -122,18 +124,18 @@ if(!$filter){
 	}
 }else{
 	if($stp == 1){
-        system "perl $prepare_data -o $outdir -list $list -step $stp -c $config -f $fqnum -filter";
+        system "perl $prepare_data -o $outdir -list $list -step $stp -c $config -t $thread -f $fqnum -filter";
     }elsif($stp == 2){
         if($qsub){
-            system "perl $prepare_data -o $outdir -list $list -step $stp -c $config -f $fqnum -filter -qsub -vf $vf2";
+            system "perl $prepare_data -o $outdir -list $list -step $stp -c $config -t $thread -f $fqnum -filter -qsub -vf $vf2";
         }else{
-            system "perl $prepare_data -o $outdir -list $list -step $stp -c $config -f $fqnum -filter";
+            system "perl $prepare_data -o $outdir -list $list -step $stp -c $config -t $thread -f $fqnum -filter";
         }
     }elsif($stp == 3){
         if($qsub){
-            system "perl $prepare_data -o $outdir -list $list -step $stp -c $config -f $fqnum -filter -qsub -vf $vf3";
+            system "perl $prepare_data -o $outdir -list $list -step $stp -c $config -t $thread -f $fqnum -filter -qsub -vf $vf3";
         }else{
-            system "perl $prepare_data -o $outdir -list $list -step $stp -c $config -f $fqnum -filter";
+            system "perl $prepare_data -o $outdir -list $list -step $stp -c $config -t $thread -f $fqnum -filter";
         }
 	}elsif($stp == 4){
 		my $len;
