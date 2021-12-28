@@ -168,7 +168,7 @@ if(!$filter){
             }else{
 			#	print "sample".$sample_name."\n";
 #				print "perl $search_point -fq1 $fq1[0] -fq2 $fq2[0] -fq3 $fq3[0] -fq4 $fq4[0] -fq5 $fq5[0] -fq6 $fq6[0] -fq7 $fq7[0] -fq8 $fq8[0] -fa1 $fa1 -fa2 $fa2 -o $outdir/step4/$sample_name -filter";
-                system "perl $search_point -fq1 $fq1[0] -fq2 $fq2[0] -fq3 $fq3[0] -fq4 $fq4[0] -fq5 $fq5[0] -fq6 $fq6[0] -fq7 $fq7[0] -fq8 $fq8[0] -fa1 $fa1 -fa2 $fa2 -o $outdir/step4/$sample_name -filter -l $sample_name -s $len";
+                system "perl $search_point -fq1 $fq1[0] -fq2 $fq2[0] -fq3 $fq3[0] -fq4 $fq4[0] -fq5 $fq5[0] -fq6 $fq6[0] -fq7 $fq7[0] -fq8 $fq8[0] -fa1 $fa1 -fa2 $fa2 -o $outdir/step4/$sample_name -filter -l $sample_name -t $thread -s $len";
 ##				print "perl $search_point -fq1 $fq1[0] -fq2 $fq2[0] -fq3 $fq3[0] -fq4 $fq4[0] -fq5 $fq5[0] -fq6 $fq6[0] -fq7 $fq7[0] -fq8 $fq8[0] -fa1 $fa1 -fa2 $fa2 -o $outdir/step4/$sample_name -filter -l $sample_name -s $len\n";
 #				print "perl $search_point -fq1 $fq1[0] -fq2 $fq2[0] -fq3 $fq3[0] -fq4 $fq4[0] -fa1 $fa1 -fa2 $fa2 -o $outdir/step4/$sample_name -filter\n";
 #				print "perl $search_point -fq1 $fq1[0] -fq2 $fq2[0] -fq3 $fq3[0] -fq4 $fq4[0] -fq5 $fq5[0] -fq6 $fq6[0] -fq7 $fq7[0] -fq8 $fq8[0] -fa1 $fa1 -fa2 $fa2 -o $outdir/step4/$sample_name -filter\n";
