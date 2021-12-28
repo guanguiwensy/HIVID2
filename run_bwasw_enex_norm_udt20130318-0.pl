@@ -76,7 +76,7 @@ GetOptions(
 	'filter' => \$filter,
 	'l=s' => \$sample_name,
 	's=i' => \$len,
-	'thread=t' => \$thread,
+	't=s' => \$thread,
 );	
 
 
