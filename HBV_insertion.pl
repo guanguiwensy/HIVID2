@@ -26,7 +26,7 @@ GetOptions (
 	'qsub!'=>\$qsub,
 	'vf=s'=>\$vf,
 	'filter!'=>\$filter,
-	'thread=t'=>\$thread,
+	't=s'=>\$thread,
 	'h|help!'=>\$help,
 );
 die $usage if $help;
