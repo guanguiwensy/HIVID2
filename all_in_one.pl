@@ -39,7 +39,7 @@ GetOptions(
     'c=s' => \$config,
     'fa1=s' => \$fa1,
     'fa2=s' => \$fa2,
-    'thread=t' => \$thread,
+    't=s' => \$thread,
 );
 
 die `pod2text $0` unless ($outdir && $total_list && $bin_dir && $config && $fa1 && $fa2 && $thread);
