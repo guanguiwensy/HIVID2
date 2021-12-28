@@ -31,7 +31,7 @@ v1.0: 2021-10-08
 
 =cut
 
-my ($outdir, $bin_dir, $total_list, $config, $fa1, $fa2);
+my ($outdir, $bin_dir, $total_list, $config, $fa1, $fa2,$thread);
 GetOptions(
     'o=s' => \$outdir,
 	'bin=s' => \$bin_dir,
@@ -39,9 +39,10 @@ GetOptions(
     'c=s' => \$config,
     'fa1=s' => \$fa1,
     'fa2=s' => \$fa2,
+    'thread=t' => \$thread,
 );
 
-die `pod2text $0` unless ($outdir && $total_list && $bin_dir && $config && $fa1 && $fa2);
+die `pod2text $0` unless ($outdir && $total_list && $bin_dir && $config && $fa1 && $fa2 && $thread);
 
 open TL, $total_list or die $!;
 while(<TL>){
@@ -62,16 +63,16 @@ while(<TL>){
 
 	open OS, ">$outdir/$sample_id/$sample_id\_all_in_one.sh" or die $!;
 	print OS "echo \"## step 2\" >&2\n";
-	print OS "perl $bin_dir/main.pl -o $outdir/$sample_id -l $outdir/$sample_id/list  -c $config -stp 2\n";
+	print OS "perl $bin_dir/main.pl -o $outdir/$sample_id -t $thread -l $outdir/$sample_id/list  -c $config -stp 2\n";
 	print OS "sh $outdir/$sample_id/step2/$sample_id/trimmomatic.sh\n";
 
 	print OS "echo \"## step 3\" >&2\n";
-	print OS "perl $bin_dir/main.pl -o $outdir/$sample_id -l $outdir/$sample_id/list  -c $config -stp 3\n";
+	print OS "perl $bin_dir/main.pl -o $outdir/$sample_id -t $thread -l $outdir/$sample_id/list  -c $config -stp 3\n";
 	print OS "sh $outdir/$sample_id/step3/$sample_id/Human_virus_soap.sh\n";
 	print OS "sh $outdir/$sample_id/step3/$sample_id/station.sh\n";
 
 	print OS "echo \"## step 4\" >&2\n";
-	print OS "perl $bin_dir/main.pl -o $outdir/$sample_id -l $outdir/$sample_id/list  -c $config -stp 4 -filter -fa1 $fa1 -fa2 $fa2\n";
+	print OS "perl $bin_dir/main.pl -o $outdir/$sample_id -t $thread -l $outdir/$sample_id/list  -c $config -stp 4 -filter -fa1 $fa1 -fa2 $fa2\n";
 	print OS "sh $outdir/$sample_id/step4/$sample_id/bwa_mem*.sh\n";
 	close OS;
 }
