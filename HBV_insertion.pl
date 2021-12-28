@@ -120,9 +120,9 @@ while(<LIST>){
 #		print HUMAN "gunzip $a[-4] $a[-3]; ";
 		$a[-4] =~ s/\.gz//; $a[-3] =~ s/\.gz//;
 		print HUMAN "cat $a[-4].gz $a[-3].gz > $merge_trimmo_unpaired.gz;\n\n";
-		print HUMAN $config{"soap"}," -a $a[-2] -b $a[-1] -D ",$config{"ref_human"}," -o $Human_soap_pair -2 $Human_soap_single -u $Human_soap_unmap -m $low -x $max -p 8 ",$config{"virus_config"}{$read_len},"\n\n";
-#		print $config{"soap"}," -a $a[-2] -b $a[-1] -D ",$config{"ref_human"}," -o $Human_soap_pair -2 $Human_soap_single -u $Human_soap_unmap -m $low -x $max -p 8 ",$config{"virus_config"}{$read_len},"\n\n";
-		print HUMAN $config{"soap"}," -a $merge_trimmo_unpaired.gz -D ",$config{"ref_human"}," -o $Human_soap_se -u $Human_soap_se_unmap -p 8 ", $config{"virus_config"}{$read_len},"\n";
+		print HUMAN $config{"soap"}," -a $a[-2] -b $a[-1] -D ",$config{"ref_human"}," -o $Human_soap_pair -2 $Human_soap_single -u $Human_soap_unmap -m $low -x $max -p $thread ",$config{"virus_config"}{$read_len},"\n\n";
+#		print $config{"soap"}," -a $a[-2] -b $a[-1] -D ",$config{"ref_human"}," -o $Human_soap_pair -2 $Human_soap_single -u $Human_soap_unmap -m $low -x $max -p $thread ",$config{"virus_config"}{$read_len},"\n\n";
+		print HUMAN $config{"soap"}," -a $merge_trimmo_unpaired.gz -D ",$config{"ref_human"}," -o $Human_soap_se -u $Human_soap_se_unmap -p $thread ", $config{"virus_config"}{$read_len},"\n";
 #		close HUMAN;
 #		open VIRUS,">$sam/virus_soap.sh" or die $!;
 #		print VIRUS "if [!-f $merge_trimmo_unpaired.gz];then\n";
@@ -130,8 +130,8 @@ while(<LIST>){
 		$a[-4] =~ s/\.gz//; $a[-3] =~ s/\.gz//;
 #		print VIRUS "cat $a[-4] $a[-3] > $merge_trimmo_unpaired; $bin/pigz/pigz -p $thread $merge_trimmo_unpaired; $bin/pigz/pigz -p $thread $a[-4] $a[-3]\nfi\n\n";
 #		print VIRUS "#!/bin/bash\n#PBS -N virus_soap.sh\n##PBS -l nodes=1:ppn=10\n##PBS –l walltime=100:00:00\n##PBS –l mem=10G\n##PBS -q batch\n##PBS -V\n#cd \$PBS_O_WORKDIR\n";
-		print HUMAN $config{"soap"}," -a $a[-2] -b $a[-1] -D ",$config{"ref_virus"}," -o $virus_soap_pair -2 $virus_soap_single -u $virus_soap_unmap -m $low -x $max -p 8 ", $config{"Human_config"}{$read_len},"\n\n";
-		print HUMAN $config{"soap"}," -a $merge_trimmo_unpaired.gz -D ",$config{"ref_virus"}," -o $virus_soap_se -u $virus_soap_se_unmap -p 8 ",$config{"Human_config"}{$read_len},"\n\n";
+		print HUMAN $config{"soap"}," -a $a[-2] -b $a[-1] -D ",$config{"ref_virus"}," -o $virus_soap_pair -2 $virus_soap_single -u $virus_soap_unmap -m $low -x $max -p $thread ", $config{"Human_config"}{$read_len},"\n\n";
+		print HUMAN $config{"soap"}," -a $merge_trimmo_unpaired.gz -D ",$config{"ref_virus"}," -o $virus_soap_se -u $virus_soap_se_unmap -p $thread ",$config{"Human_config"}{$read_len},"\n\n";
 ##		print HUMAN "$bin/pigz/pigz -p $thread -f $virus_soap_pair $virus_soap_single $virus_soap_unmap $Human_soap_pair $Human_soap_single $Human_soap_unmap $Human_soap_se $Human_soap_se_unmap $virus_soap_se $virus_soap_se_unmap\n\n";
 		print HUMAN "$bin/pigz/pigz -p $thread -f $sample/*soap\n\n";
 		print HUMAN "date\n";
