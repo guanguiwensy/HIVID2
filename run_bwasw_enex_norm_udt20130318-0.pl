@@ -30,6 +30,7 @@ my $bin=dirname (abs_path ($0));
 		-qsub			qsub job automatically or not, default not. it's must be used with "-vf"
 		-vf	<num>		the memory need to be setted when qsub job automatically
 		-filter	<str>		filter the un-unique seq
+		-t	<num>		number of processors
 
 =head1 author 
   
@@ -57,7 +58,6 @@ my $fa1 = "/ifs1/ST_REHEAL/USER/PUBLIC_database/database/Homo_sapiens/HG19_noRan
 my $fa2 = "/ifs1/ST_REHEAL/USER/zengxi/save/HPV/mask_repeat/hpv_new.fa";
 my $outdir;
 my $threshold = 20;
-my $threads = 40;
 GetOptions(
 	'fq1=s' => \$fq1,
 	'fq2=s' => \$fq2,
@@ -76,6 +76,7 @@ GetOptions(
 	'filter' => \$filter,
 	'l=s' => \$sample_name,
 	's=i' => \$len,
+	'thread=t' => \$thread,
 );	
 
 
@@ -174,13 +175,13 @@ print OUT "perl -p -i.bak -w -e 's/^\\\@trim_pe/\\\@left_trim_pe/g' $left_fq1_1 
 print OUT "cat $fq1 $left_fq1_1 $left_fq1_2 $fq2 $left_fq2_1 $left_fq2_2 $fq3 $left_fq3_1 $left_fq3_2 $fq4 $left_fq4_1 $left_fq4_2 $fq5 $fq6 $fq7 > $outdir/fq/$basename.fq\n";  ###  modify at 22:02 2019-06-05
 
 print OUT "echo \"##  gzip the merged fq file and remove duplication again\" >&2\n";  ### modify at 15:21 2012-02-19
-print OUT "gzip -f $outdir/fq/$basename.fq\n";
+print OUT "$bin/pigz/pigz -p $thread -f $outdir/fq/$basename.fq\n";
 print OUT "perl $rm_dup -a1 $outdir/fq/$basename.fq.gz -o $outdir/fq\n";      ### modify at 15:21 2012-02-19
 
 print OUT "echo \"##  align the treated fq file with BWA-MEM\" >&2\n";
 #print OUT "$bwa index $outdir/fq/index/$basename.fq\n";    ###  modify at 11:09 2011-11-11
-print OUT "$bwa mem -t $threads $fa1 $outdir/fq/rmdup_$basename.fq.gz > $outdir/human/human_$basename.sam\n";        ### modify at 15:21 2012-02-19
-print OUT "$bwa mem -t $threads $fa2 $outdir/fq/rmdup_$basename.fq.gz > $outdir/virus/virus_$basename.sam\n";            
+print OUT "$bwa mem -t $thread $fa1 $outdir/fq/rmdup_$basename.fq.gz > $outdir/human/human_$basename.sam\n";        ### modify at 15:21 2012-02-19
+print OUT "$bwa mem -t $thread $fa2 $outdir/fq/rmdup_$basename.fq.gz > $outdir/virus/virus_$basename.sam\n";            
 print OUT "$samtools view -h -q 9 -F 4 -F 256 $outdir/human/human_$basename.sam > $outdir/human/human_$basename.uniq_map.sam\n";   ### filter the mutiple mapped reads to reserve the unique mapping reads
 
 mkdir "$outdir/human/breakpoint" unless -e "$outdir/human/breakpoint";
@@ -221,10 +222,10 @@ print OUT "perl $rm_pcr_dup $outdir/human/breakpoint/$basename\_human_bk.final.s
 #print $basename2."\n";
 #print OUT "python $bin/Uniq2.py -fq1 $outdir/../../step2/$sample_name/$basename.paired1.gz -fq2 $outdir/../../step2/$sample_name/$basename2.paired1.gz -i $outdir/human/breakpoint/$basename\_human_bk.final.stp2.uniq -o $outdir/human/breakpoint/$basename\_human_bk.final.stp2.uniq2 -id $sample_name -ref $bin/ref.list\n";
 
-print OUT "gzip -d $outdir/../../step3/$sample_name/station_pair_end/$sample_name\_se_se.gz\n";
+print OUT "$bin/pigz/pigz -p $thread -d $outdir/../../step3/$sample_name/station_pair_end/$sample_name\_se_se.gz\n";
 print OUT "perl -lane 'if (\$F[0]=~/1\$/) {print \$_.\"\\t+\\t$len\";} else {print \$_.\"\\t-\\t$len\";}' $outdir/../../step3/$sample_name/station_pair_end/$sample_name\_se_se >$outdir/../../step3/$sample_name/station_pair_end/$sample_name\_se_se_tran\n";
 print OUT "mv -f $outdir/../../step3/$sample_name/station_pair_end/$sample_name\_se_se_tran $outdir/../../step3/$sample_name/station_pair_end/$sample_name\_se_se\n";
-print OUT "gzip -f $outdir/../../step3/$sample_name/station_pair_end/$sample_name\_se_se\n";
+print OUT "$bin/pigz/pigz -p $thread -f $outdir/../../step3/$sample_name/station_pair_end/$sample_name\_se_se\n";
 print OUT "perl $bin/breakpiont_discordant-rd_v1.2.pl -disc_read $outdir/../../step3/$sample_name/station_pair_end/$sample_name\_se_se.gz -bk $outdir/human/breakpoint/$basename\_human_bk.final.stp2.uniq -len $len -ods $outdir/human/breakpoint/human_bk.discordant_read.txt1.2 -obk $outdir/human/breakpoint/$basename\_human_bk.final.stp2.uniq2\n";
 print OUT "sed -ir 's#nan#0#g' $outdir/human/breakpoint/$basename\_human_bk.final.stp2.uniq2\n";
 my ($fq1_rm_adapter, $fq2_rm_adapter) = ($base_fq1.1, $base_fq2.1);
@@ -241,7 +242,7 @@ print OUT "perl $rm_pcr_dup $outdir/human/breakpoint/low_confident.$basename\_hu
 
 print OUT "$samtools view -b -h -S $outdir/virus/virus_$basename.sam -o $outdir/virus/virus_$basename.bam; $samtools view -b -h -S $outdir/human/human_$basename.uniq_map.sam -o $outdir/human/human_$basename.uniq_map.bam\n";
 print OUT "rm -f $outdir/virus/virus_$basename.sam $outdir/human/human_$basename.sam $outdir/human/human_$basename.uniq_map.sam $outdir/fq/$basename\_human_un.fq $outdir/fq/$basename\_hbv_un.fq $outdir/fq/$basename\_un_un.fq $outdir/fq/$basename\_se_se.fq $outdir/fq/$basename.fq.gz $outdir/fq/sort_$basename.fq\n";
-print OUT "gzip -f $dir_fq1/* $dir_fq2/* $dir_fq3/* $dir_fq4/*\n\n";
+print OUT "$bin/pigz/pigz -p $thread -f $dir_fq1/* $dir_fq2/* $dir_fq3/* $dir_fq4/*\n\n";
 
 print OUT "date >&2\n";
 print OUT "echo \"All work has done!\" >&2\n";
