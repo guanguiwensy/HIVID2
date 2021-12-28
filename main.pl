@@ -80,18 +80,18 @@ die `pod2text $0` unless ($outdir && $list && $stp);
 if(!$filter){
 #	print "zengxi\n";
 	if($stp == 1){
-		system "perl $prepare_data -o $outdir -list $list -step $stp -c $config -f $fqnum";	
+		system "perl $prepare_data -o $outdir -list $list -step $stp -t $thread -c $config -f $fqnum";	
 	}elsif($stp == 2){
 		if($qsub){
-			system "perl $prepare_data -o $outdir -list $list -step $stp -c $config -f $fqnum -qsub -vf $vf2";
+			system "perl $prepare_data -o $outdir -list $list -step $stp -t $thread -c $config -f $fqnum -qsub -vf $vf2";
 		}else{
-			system "perl $prepare_data -o $outdir -list $list -step $stp -c $config -f $fqnum";
+			system "perl $prepare_data -o $outdir -list $list -step $stp -t $thread -c $config -f $fqnum";
 		}	
 	}elsif($stp == 3){
 		if($qsub){
-			system "perl $prepare_data -o $outdir -list $list -step $stp -c $config -f $fqnum -qsub -vf $vf3";
+			system "perl $prepare_data -o $outdir -list $list -step $stp -t $thread -c $config -f $fqnum -qsub -vf $vf3";
 		}else{
-			system "perl $prepare_data -o $outdir -list $list -step $stp -c $config -f $fqnum";
+			system "perl $prepare_data -o $outdir -list $list -step $stp -t $thread -c $config -f $fqnum";
 		}
 	}elsif($stp == 4){
 		mkdir "$outdir/step4" unless -e "$outdir/step4";
