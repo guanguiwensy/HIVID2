@@ -104,14 +104,14 @@ if(!$filter){
 			my $lib = $b[1];
 			my $fc = $b[2];
 			mkdir "$outdir/step4/$sample_name" unless -e "$outdir/step4/$sample_name";
-			my @fq1 = <$outdir/step3/$sample_name/reads_assemble/human_un/reads_assembly_mergefa_quality*>;
-			my @fq2 = <$outdir/step3/$sample_name/reads_assemble/hbv_un/reads_assembly_mergefa_quality*>;
-			my @fq3 = <$outdir/step3/$sample_name/reads_assemble/un_un/reads_assembly_mergefa_quality*>;
-			my @fq4 = <$outdir/step3/$sample_name/reads_assemble/se_se/reads_assembly_mergefa_quality*>;
+			my @fq1 = <$outdir/step3/$sample_name/reads_assemble_pair-end/human_un/reads_assembly_mergefa_quality*>;
+			my @fq2 = <$outdir/step3/$sample_name/reads_assemble_pair-end/hbv_un/reads_assembly_mergefa_quality*>;
+			my @fq3 = <$outdir/step3/$sample_name/reads_assemble_pair-end/un_un/reads_assembly_mergefa_quality*>;
+			my @fq4 = <$outdir/step3/$sample_name/reads_assemble_pair-end/se_se/reads_assembly_mergefa_quality*>;
 			my @fq5 = <$outdir/step3/$sample_name/reads_assemble_single-end/human_un/*unpaired*>;
-            my @fq6 = <$outdir/step3/$sample_name/reads_assemble_single-end/hbv_un/*unpaired*>;
-            my @fq7 = <$outdir/step3/$sample_name/reads_assemble_single-end/un_un/*unpaired*>;
-            my @fq8 = <$outdir/step3/$sample_name/reads_assemble_single-end/se_se/*unpaired*>;
+			my @fq6 = <$outdir/step3/$sample_name/reads_assemble_single-end/hbv_un/*unpaired*>;
+			my @fq7 = <$outdir/step3/$sample_name/reads_assemble_single-end/un_un/*unpaired*>;
+			my @fq8 = <$outdir/step3/$sample_name/reads_assemble_single-end/se_se/*unpaired*>;
 #			print $fq1[0], "\n";
 #
 			if($qsub){
