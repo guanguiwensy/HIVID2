@@ -57,7 +57,7 @@ my $fa1 = "/ifs1/ST_REHEAL/USER/PUBLIC_database/database/Homo_sapiens/HG19_noRan
 my $fa2 = "/ifs1/ST_REHEAL/USER/zengxi/save/HPV/mask_repeat/hpv_new.fa";
 my $outdir;
 my $threshold = 20;
-
+my $threads = 40;
 GetOptions(
 	'fq1=s' => \$fq1,
 	'fq2=s' => \$fq2,
@@ -179,8 +179,8 @@ print OUT "perl $rm_dup -a1 $outdir/fq/$basename.fq.gz -o $outdir/fq\n";      ##
 
 print OUT "echo \"##  align the treated fq file with BWA-MEM\" >&2\n";
 #print OUT "$bwa index $outdir/fq/index/$basename.fq\n";    ###  modify at 11:09 2011-11-11
-print OUT "$bwa mem $fa1 $outdir/fq/rmdup_$basename.fq.gz > $outdir/human/human_$basename.sam\n";        ### modify at 15:21 2012-02-19
-print OUT "$bwa mem $fa2 $outdir/fq/rmdup_$basename.fq.gz > $outdir/virus/virus_$basename.sam\n";            
+print OUT "$bwa mem -t $threads $fa1 $outdir/fq/rmdup_$basename.fq.gz > $outdir/human/human_$basename.sam\n";        ### modify at 15:21 2012-02-19
+print OUT "$bwa mem -t $threads $fa2 $outdir/fq/rmdup_$basename.fq.gz > $outdir/virus/virus_$basename.sam\n";            
 print OUT "$samtools view -h -q 9 -F 4 -F 256 $outdir/human/human_$basename.sam > $outdir/human/human_$basename.uniq_map.sam\n";   ### filter the mutiple mapped reads to reserve the unique mapping reads
 
 mkdir "$outdir/human/breakpoint" unless -e "$outdir/human/breakpoint";
