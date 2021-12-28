@@ -1,7 +1,7 @@
 #!usr/bin/perl -w
 
 #############################################################################################################
-###  This program is to generate the folders and shell scripts for running step3              			 ####
+###  This program is to generate the folders and shell scripts for running step3              		 ####
 ###  Author: Yi Shang                                                                                    ####
 ###          Zeng Xi                                                                                     ####
 ###  Last update: 2020-12                                                                                ####
@@ -15,8 +15,8 @@ use File::Basename;
 use Cwd qw/abs_path/;
 my $bin=dirname (abs_path ($0));
 
-my $usage=" perl $0 -o <out dir> -list <sample.list> -c <Config file> -filter <whether filter nounique align to human> -soap  -station  -qsub -vf -h";
-my ($out,$list,$con,$soap,$station,$qsub,$vf,$help,$filter);
+my $usage=" perl $0 -o <out dir> -list <sample.list> -c <Config file> -filter <whether filter nounique align to human> -soap  -station  -qsub -vf -t -h";
+my ($out,$list,$con,$soap,$station,$qsub,$vf,$help,$filter,$thread);
 GetOptions (
 	'o=s'=>\$out,							# step3 dir
 	'list=s'=>\$list,						# rmadapter_lowquality.list
@@ -26,6 +26,7 @@ GetOptions (
 	'qsub!'=>\$qsub,
 	'vf=s'=>\$vf,
 	'filter!'=>\$filter,
+	'thread=t'=>\$thread,
 	'h|help!'=>\$help,
 );
 die $usage if $help;
@@ -127,12 +128,12 @@ while(<LIST>){
 #		print VIRUS "if [!-f $merge_trimmo_unpaired.gz];then\n";
 #        print VIRUS "gunzip $a[-4] $a[-3]; ";
 		$a[-4] =~ s/\.gz//; $a[-3] =~ s/\.gz//;
-#		print VIRUS "cat $a[-4] $a[-3] > $merge_trimmo_unpaired; gzip $merge_trimmo_unpaired; gzip $a[-4] $a[-3]\nfi\n\n";
+#		print VIRUS "cat $a[-4] $a[-3] > $merge_trimmo_unpaired; $bin/pigz/pigz -p $thread $merge_trimmo_unpaired; $bin/pigz/pigz -p $thread $a[-4] $a[-3]\nfi\n\n";
 #		print VIRUS "#!/bin/bash\n#PBS -N virus_soap.sh\n##PBS -l nodes=1:ppn=10\n##PBS –l walltime=100:00:00\n##PBS –l mem=10G\n##PBS -q batch\n##PBS -V\n#cd \$PBS_O_WORKDIR\n";
 		print HUMAN $config{"soap"}," -a $a[-2] -b $a[-1] -D ",$config{"ref_virus"}," -o $virus_soap_pair -2 $virus_soap_single -u $virus_soap_unmap -m $low -x $max -p 8 ", $config{"Human_config"}{$read_len},"\n\n";
 		print HUMAN $config{"soap"}," -a $merge_trimmo_unpaired.gz -D ",$config{"ref_virus"}," -o $virus_soap_se -u $virus_soap_se_unmap -p 8 ",$config{"Human_config"}{$read_len},"\n\n";
-##		print HUMAN "gzip -f $virus_soap_pair $virus_soap_single $virus_soap_unmap $Human_soap_pair $Human_soap_single $Human_soap_unmap $Human_soap_se $Human_soap_se_unmap $virus_soap_se $virus_soap_se_unmap\n\n";
-		print HUMAN "gzip -f $sample/*soap\n\n";
+##		print HUMAN "$bin/pigz/pigz -p $thread -f $virus_soap_pair $virus_soap_single $virus_soap_unmap $Human_soap_pair $Human_soap_single $Human_soap_unmap $Human_soap_se $Human_soap_se_unmap $virus_soap_se $virus_soap_se_unmap\n\n";
+		print HUMAN "$bin/pigz/pigz -p $thread -f $sample/*soap\n\n";
 		print HUMAN "date\n";
 		close HUMAN;
 
