@@ -105,9 +105,9 @@ if ($step==1){
         }
 	close LIST;
 	`mkdir $step3dir` if !-d $step3dir;
-	($filter)?`perl $soap_and_station -o $step3dir -list $rmadapter_lowquality_list -c $con -soap -station -filter`:`perl $soap_and_station -o $step3dir -list $rmadapter_lowquality_list -c $con -soap -station` if !$qsub;
-#	print "perl $soap_and_station -o $step3dir -list $rmadapter_lowquality_list -c $con -soap -station -filter\n";
-	($filter)?`perl $soap_and_station -o $step3dir -list $rmadapter_lowquality_list -c $con -soap -station -filter -qsub -vf $vf`:`perl $soap_and_station -o $step3dir -list $rmadapter_lowquality_list -c $con -soap -station -qsub -vf $vf` if $qsub;
+	($filter)?`perl $soap_and_station -o $step3dir -list $rmadapter_lowquality_list -c $con -soap -station -filter`:`perl $soap_and_station -o $step3dir -t $thread -list $rmadapter_lowquality_list -c $con -soap -station` if !$qsub;
+#	print "perl $soap_and_station -o $step3dir -list $rmadapter_lowquality_list -c $con -soap -t $thread -station -filter\n";
+	($filter)?`perl $soap_and_station -o $step3dir -list $rmadapter_lowquality_list -c $con -soap -station -filter -qsub -vf $vf`:`perl $soap_and_station -o $step3dir -t $thread -list $rmadapter_lowquality_list -c $con -soap -station -qsub -vf $vf` if $qsub;
 	&readmestep3("$step3dir/step3_readme");
 }else{
 	print "Please check option \"-step\"\n";
