@@ -72,7 +72,7 @@ GetOptions(
 	'fa1=s' => \$fa1,
 	'fa2=s' => \$fa2,
 	'filter' => \$filter,
-	'thread=t' => \$thread,
+	't=s' => \$thread,
 );
 
 die `pod2text $0` unless ($outdir && $list && $stp);
