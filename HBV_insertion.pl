@@ -163,12 +163,12 @@ while(<LIST>){
 			open STAT,">$sam/station.sh" or die $!;
 			print STAT "#!/bin/bash\n#PBS -N station.sh\n#PBS -l nodes=1:ppn=5\n#PBS –l walltime=100:00:00\n#PBS –l mem=10G\n#PBS -q batch\n#PBS -V\ncd \$PBS_O_WORKDIR\n\n";
 			print STAT "date\n";
-#			print STAT "gzip -d $virus_soap_pair $virus_soap_single $virus_soap_unmap $Human_soap_pair $Human_soap_single $Human_soap_unmap\n"; #test fail need
+#			print STAT "$bin/pigz/pigz -t $thread -d $virus_soap_pair $virus_soap_single $virus_soap_unmap $Human_soap_pair $Human_soap_single $Human_soap_unmap\n"; #test fail need
 			($filter)?print STAT "perl $station_pl -hp $Human_soap_pair.gz -hs $Human_soap_single.gz -hu $Human_soap_unmap.gz -bp $virus_soap_pair.gz -bs $virus_soap_single.gz -bu $virus_soap_unmap.gz -pe $pe_pe -se $se_se -sb $hbv_un -sh $human_un -un $un_un  -stat $stat -f1 $a[-2] -f2 $a[-1] -o $out_assemble -filter\n\n" : print STAT "perl $station_pl -hp $Human_soap_pair.gz -hs $Human_soap_single.gz -hu $Human_soap_unmap.gz -bp $virus_soap_pair.gz -bs $virus_soap_single.gz -bu $virus_soap_unmap.gz -pe $pe_pe -se $se_se -sb $hbv_un -sh $human_un -un $un_un  -stat $stat -f1 $a[-2] -f2 $a[-1] -o $out_assemble \n\n";
 			($filter)?print STAT "perl $station_pl_se -hs $Human_soap_se.gz -hu $Human_soap_se_unmap.gz -bs $virus_soap_se.gz -bu $virus_soap_se_unmap.gz -se $se_se_single_end -sb $hbv_un_single_end -sh $human_un_single_end -un $un_un_single_end -stat $stat -f1 $merge_trimmo_unpaired.gz -o $out_assemble_se -filter\n\n":print STAT "perl $station_pl_se -hs $Human_soap_se.gz -hu $Human_soap_se_unmap.gz -bs $virus_soap_se.gz -bu $virus_soap_se_unmap.gz -se $se_se_single_end -sb $hbv_un_single_end -sh $human_un_single_end -un $un_un_single_end -stat $stat -f1 $merge_trimmo_unpaired.gz -o $out_assemble_se \n\n";
 			print STAT "perl $cal_dup_rate $Human_soap_pair.gz $step1_folder/sample.list > $Human_soap_pair.uniq_rate\n";
 ##			print STAT "perl $station_break -i $se_se -h $human_un -l $a[5] -o $breakpoint\n\n";
-#			print STAT "gzip -f $virus_soap_pair $virus_soap_single $virus_soap_unmap $Human_soap_pair $Human_soap_single $Human_soap_unmap\n";
+#			print STAT "$bin/pigz/pigz -t $thread -f $virus_soap_pair $virus_soap_single $virus_soap_unmap $Human_soap_pair $Human_soap_single $Human_soap_unmap\n";
 			print STAT "date\n";
 			close STAT;
 			if($qsub){
